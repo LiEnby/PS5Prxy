@@ -1,38 +1,16 @@
 ﻿using System;
 using Fiddler;
 using System.IO;
-using System.Runtime.InteropServices;
+using System.Text;
 
 namespace PS5Prxy
 {
     class Program
     {
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern bool SetConsoleCtrlHandler(ConsoleEventDelegate callback, bool add);
-
-        static ConsoleEventDelegate handler;   // Keeps it from getting garbage collected
-        private delegate bool ConsoleEventDelegate(int eventType);
-        static string UrlFilter;
-        static bool ConsoleEventCallback(int eventType)
-        {
-            if (eventType == 2) // WM_CLOSE
-            {
-                if(FiddlerApplication.IsStarted())
-                {
-                    Console.WriteLine("Stopping proxy...");
-                    FiddlerApplication.Shutdown();
-                }
-            }
-            return false;
-        }
-
         static void Main(string[] args)
         {
-            handler = new ConsoleEventDelegate(ConsoleEventCallback);
-            SetConsoleCtrlHandler(handler, true);
 
-            UrlFilter = "manuals.playstation.net";
+            string UrlFilter = "manuals.playstation.net";
 
             Console.WriteLine("PS5Prxy running on port 8080");
             FiddlerCoreStartupSettingsBuilder builder = new FiddlerCoreStartupSettingsBuilder();
@@ -47,19 +25,25 @@ namespace PS5Prxy
 
         private static void FiddlerApplication_BeforeRequest(Session oSession)
         {
-            if(oSession.fullUrl.Contains(UrlFilter))
+            if(oSession.fullUrl.Contains("manuals.playstation.net"))
             {
-                Console.WriteLine("Sending ps5.html... to "+oSession.clientIP);
-                if (oSession.HTTPMethodIs("CONNECT"))
-                {
-                    oSession["x-replywithtunnel"] = "Hello Sony :3";
-                    return;
-                }
-
+                Console.WriteLine(oSession.clientIP+" requested "+oSession.fullUrl+".. redirecting ");
                 oSession.utilCreateResponseAndBypassServer();
-                string htmlContents = File.ReadAllText("ps5.html");
-                oSession.utilSetResponseBody(htmlContents);
-                oSession.responseCode = 200;
+
+                MemoryStream ms = new MemoryStream();
+                string response = "HTTP/1.1 301 Moved Temporarily\r\nCache-Control: no-cache\r\nServer: Silica\r\nLocation: http://ps5html.com\r\nDate: Fri, 13 Nov 2020 03:25:03 GMT\r\nContent-Length: 0\r\n\r\n";
+                ms.Write(Encoding.UTF8.GetBytes(response), 0, Encoding.UTF8.GetBytes(response).Length);
+                ms.Seek(0x00, SeekOrigin.Begin);
+
+                oSession.LoadResponseFromStream(ms,"");
+
+            }
+            if(oSession.fullUrl.Contains("ps5html.com"))
+            {
+                Console.WriteLine(oSession.clientIP + " requested " + oSession.fullUrl + ".. sending ps5.html ");
+                oSession.utilCreateResponseAndBypassServer();
+                oSession.utilSetResponseBody(File.ReadAllText("ps5.html"));
+
             }
         }
 
