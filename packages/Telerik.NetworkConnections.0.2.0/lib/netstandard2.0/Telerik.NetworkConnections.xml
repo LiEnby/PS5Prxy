@@ -1,0 +1,265 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Telerik.NetworkConnections</name>
+    </assembly>
+    <members>
+        <member name="T:Telerik.NetworkConnections.INetworkConnectionsDetector">
+            <summary>
+            Factory for creating <see cref="T:Telerik.NetworkConnections.NetworkConnection"/> instances.
+            </summary>
+        </member>
+        <member name="M:Telerik.NetworkConnections.INetworkConnectionsDetector.Detect">
+            <summary>
+            Factory method for creating <see cref="T:Telerik.NetworkConnections.NetworkConnection"/> instances.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Telerik.NetworkConnections.Linux.LinuxNetworkConnectionsDetector">
+            <summary>
+            Detector for Linux-specific network connection.
+            </summary>
+            <seealso cref="T:Telerik.NetworkConnections.INetworkConnectionsDetector" />
+        </member>
+        <member name="M:Telerik.NetworkConnections.Linux.LinuxNetworkConnectionsDetector.Detect">
+            <summary>
+            Factory method for creating <see cref="T:Telerik.NetworkConnections.NetworkConnection" /> instances.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Telerik.NetworkConnections.Mac.MacNetworkConnectionsDetector">
+            <summary>Detector for Mac-specific network connections.</summary>
+            <seealso cref="T:Telerik.NetworkConnections.INetworkConnectionsDetector" />
+        </member>
+        <member name="M:Telerik.NetworkConnections.Mac.MacNetworkConnectionsDetector.Detect">
+            <summary>
+            Factory method for creating <see cref="T:Telerik.NetworkConnections.NetworkConnection" /> instances.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Telerik.NetworkConnections.Mac.Scripts">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Telerik.NetworkConnections.Mac.Scripts.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Telerik.NetworkConnections.Mac.Scripts.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Telerik.NetworkConnections.Mac.Scripts.ActiveNetworkInterface">
+             <summary>
+               Looks up a localized string similar to #!/bin/bash
+            
+            services=$(networksetup -listnetworkserviceorder | grep &apos;Hardware Port&apos;)
+            
+            while read line; do
+                sname=$(echo $line | awk -F  &quot;(, )|(: )|[)]&quot; &apos;{print $2}&apos;)
+                sdev=$(echo $line | awk -F  &quot;(, )|(: )|[)]&quot; &apos;{print $4}&apos;)
+                if [ -n &quot;$sdev&quot; ]; then
+                    ifconfig $sdev 2&gt;/dev/null | grep &apos;status: active&apos; &gt; /dev/null 2&gt;&amp;1
+                    rc=&quot;$?&quot;
+                    if [ &quot;$rc&quot; -eq 0 ]; then
+                        currentservice=&quot;$sname&quot;
+                        break
+                    fi
+                fi
+            done &lt;&lt;&lt; &quot;$(echo &quot;$services&quot;)&quot;
+            
+            if [ -n &quot;$currentservic [rest of string was truncated]&quot;;.
+             </summary>
+        </member>
+        <member name="P:Telerik.NetworkConnections.Mac.Scripts.ProxySettingsForNetworkInterfaceFormat">
+             <summary>
+               Looks up a localized string similar to #!/bin/bash
+            
+            networksetup -getproxyautodiscovery {0}
+            networksetup -getautoproxyurl {0}
+            networksetup -getproxybypassdomains {0}
+            networksetup -getwebproxy {0}
+            networksetup -getsecurewebproxy {0}
+            networksetup -getftpproxy {0}
+            networksetup -getsocksfirewallproxy {0}.
+             </summary>
+        </member>
+        <member name="P:Telerik.NetworkConnections.Mac.Scripts.SetProxySettingsForNetworkInterfaceFormat">
+             <summary>
+               Looks up a localized string similar to #!/bin/bash
+            
+            networksetup -setproxyautodiscovery {0} {1}
+            networksetup -setautoproxyurl {0} {2}
+            networksetup -setautoproxystate {0} {3}
+            networksetup -setwebproxy {0} {4} {5} off
+            networksetup -setwebproxystate {0} {6}
+            networksetup -setsecurewebproxy {0} {7} {8} off
+            networksetup -setsecurewebproxystate {0} {9}
+            networksetup -setftpproxy {0} {10} {11} off
+            networksetup -setftpproxystate {0} {12}
+            networksetup -setsocksfirewallproxy {0} {13} {14} off
+            networksetup -setsocksfirewallproxystate {0} {15}
+            networksetup -s [rest of string was truncated]&quot;;.
+             </summary>
+        </member>
+        <member name="T:Telerik.NetworkConnections.NetworkConnection">
+            <summary>
+            An abstraction which allows manipulation and monitoring of proxy settings for specific network connection.
+            </summary>
+            <seealso cref="T:System.IDisposable" />
+        </member>
+        <member name="M:Telerik.NetworkConnections.NetworkConnection.#ctor(Telerik.NetworkConnections.NetworkConnectionFullName)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Telerik.NetworkConnections.NetworkConnection"/> class.
+            </summary>
+            <param name="fullName">The full name.</param>
+        </member>
+        <member name="M:Telerik.NetworkConnections.NetworkConnection.Finalize">
+            <summary>
+            Finalizes an instance of the <see cref="T:Telerik.NetworkConnections.NetworkConnection"/> class.
+            </summary>
+        </member>
+        <member name="E:Telerik.NetworkConnections.NetworkConnection.ProxySettingsChanged">
+            <summary>
+            Occurs when proxy settings for this connection are changed.
+            </summary>
+        </member>
+        <member name="P:Telerik.NetworkConnections.NetworkConnection.FullName">
+            <summary>
+            Gets the full name of the connection.
+            </summary>
+            <value>
+            The full name of the connection.
+            </value>
+        </member>
+        <member name="M:Telerik.NetworkConnections.NetworkConnection.Equals(Telerik.NetworkConnections.NetworkConnection)">
+            <summary>
+            Indicates whether the current object is equal to another object of the same type.
+            </summary>
+            <param name="other">An object to compare with this object.</param>
+            <returns>
+            true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.
+            </returns>
+        </member>
+        <member name="M:Telerik.NetworkConnections.NetworkConnection.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object" />, is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object" /> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Telerik.NetworkConnections.NetworkConnection.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
+        </member>
+        <member name="M:Telerik.NetworkConnections.NetworkConnection.Dispose">
+            <summary>
+            Performs releasing of resources.
+            </summary>
+        </member>
+        <member name="M:Telerik.NetworkConnections.NetworkConnection.OnProxySettingsChanged(Telerik.NetworkConnections.ProxySettingsChangedEventArgs)">
+            <summary>
+            Raises the <see cref="E:ProxySettingsChanged" /> event.
+            </summary>
+            <param name="ea">The <see cref="T:Telerik.NetworkConnections.ProxySettingsChangedEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:Telerik.NetworkConnections.NetworkConnection.Dispose(System.Boolean)">
+            <summary>
+            Releases resources for this instance.
+            </summary>
+        </member>
+        <member name="T:Telerik.NetworkConnections.NetworkConnectionsManager">
+            <summary>
+            Manager for the available network connections. The class can be instantiated with the 
+            <see cref="M:Telerik.NetworkConnections.NetworkConnectionsManager.#ctor(System.Collections.Generic.IEnumerable{Telerik.NetworkConnections.INetworkConnectionsDetector})"/> constructor,
+            or composed using MEF.
+            </summary>
+            <seealso cref="T:System.IDisposable" />
+        </member>
+        <member name="M:Telerik.NetworkConnections.NetworkConnectionsManager.#ctor(System.Collections.Generic.IEnumerable{Telerik.NetworkConnections.INetworkConnectionsDetector})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Telerik.NetworkConnections.NetworkConnectionsManager"/> class.
+            </summary>
+            <param name="networkConnectionsDetectors">The network connections detectors to be executed.</param>
+        </member>
+        <member name="M:Telerik.NetworkConnections.NetworkConnectionsManager.Finalize">
+            <summary>
+            Finalizes an instance of the <see cref="T:Telerik.NetworkConnections.NetworkConnectionsManager"/> class.
+            </summary>
+        </member>
+        <member name="E:Telerik.NetworkConnections.NetworkConnectionsManager.ProxySettingsChanged">
+            <summary>
+            Occurs when proxy settings for any of the detected network connection changes.
+            </summary>
+        </member>
+        <member name="M:Telerik.NetworkConnections.NetworkConnectionsManager.GetAllConnectionFullNames">
+            <summary>
+            Gets the names of all detected network connections.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Telerik.NetworkConnections.NetworkConnectionsManager.Dispose">
+            <summary>
+            Releases the instance.
+            </summary>
+        </member>
+        <member name="T:Telerik.NetworkConnections.Windows.RasNetworkConnectionsDetector">
+            <summary>
+            Detector for Windows-specific RAS network connection.
+            </summary>
+            <seealso cref="T:Telerik.NetworkConnections.INetworkConnectionsDetector" />
+        </member>
+        <member name="M:Telerik.NetworkConnections.Windows.RasNetworkConnectionsDetector.Detect">
+            <summary>
+            Factory method for creating <see cref="T:Telerik.NetworkConnections.NetworkConnection" /> instances.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="E:Telerik.NetworkConnections.Windows.RegistryWatcher.KeyChanged">
+            <summary>
+            Fires when the specified registry key has changed.
+            </summary>
+        </member>
+        <member name="M:Telerik.NetworkConnections.Windows.RegistryWatcher.WatchKey(Microsoft.Win32.RegistryHive,System.String,System.EventHandler)">
+            <summary>
+            Watch a registry key for changes to its values.
+            </summary>
+            <param name="registryHive">The Registry Hive in which the key lives</param>
+            <param name="subKey">The key, e.g. \Software\Microsoft\Fiddler2\</param>
+            <param name="oToNotify">The Event Handler to invoke when a change occurs.</param>
+            <returns>A new RegistryWatcher object.</returns>
+        </member>
+        <member name="M:Telerik.NetworkConnections.Windows.RegistryWatcher.Start">
+            <summary>
+            Start monitoring.
+            </summary>
+        </member>
+        <member name="M:Telerik.NetworkConnections.Windows.RegistryWatcher.Stop">
+            <summary>
+            Stops the monitoring thread.
+            </summary>
+        </member>
+        <member name="T:Telerik.NetworkConnections.Windows.WinINetNetworkConnectionsDetector">
+            <summary>
+            Detector for Windows-specific Windows Internet (WinINET) network component connection.
+            </summary>
+            <seealso cref="T:Telerik.NetworkConnections.INetworkConnectionsDetector"/>
+        </member>
+        <member name="M:Telerik.NetworkConnections.Windows.WinINetNetworkConnectionsDetector.Detect">
+            <summary>
+            Factory method for creating <see cref="T:Telerik.NetworkConnections.NetworkConnection" /> instances.
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
